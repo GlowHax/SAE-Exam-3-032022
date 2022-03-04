@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Respresents a game level with a playground of cellCount_X * cellCount_Y elements.
@@ -69,8 +70,6 @@ public class Level
             int elementType = (int)Random.Range(0f, 4f);
             Grid.SetElement(i, new Element(prefabs[elementType], elementType));
         }
-
-        
     }
 
 
@@ -83,8 +82,19 @@ public class Level
     /// <param name="worldPosition">Point in worldcoordinates (this position is not necessarily inside of the grid bounds).</param>
     public int HoverCells(Vector3 worldPosition)
     {
-        
-        return -99;
+        int selectedCellIndex = Grid.PointToIndex(worldPosition);
+
+        if (selectedCellIndex == -1)
+            return 0;
+
+        int[] indexesOfObjectsToRotate = GetAdjacentCellsOfSameType(selectedCellIndex);
+
+        foreach(int index in indexesOfObjectsToRotate)
+        {
+            float yRotationSpeed = 45;
+            Grid.GetElement(index).Visuals.transform.Rotate(Vector3.up, yRotationSpeed * Time.deltaTime);
+        }
+        return indexesOfObjectsToRotate.Length;
     }
 
     /// <summary>
@@ -109,19 +119,24 @@ public class Level
     public int[] GetAdjacentCellsOfSameType(int cellIndex)
     {
         int[] neighbours = Grid.GetNeighbours(cellIndex);
-        int[] cellArr = new int[neighbours.Length + 1];
+        List<int> neighboursOfSameTypeList = new List<int>();
+        neighboursOfSameTypeList.Add(cellIndex);
 
-        cellArr[0] = cellIndex;
-
-        for(int i = 1; i < neighbours.Length; i++)
+        for(int i = 0; i < neighbours.Length; i++)
         {
             if(Grid.GetElement(cellIndex).ElementType == Grid.GetElement(neighbours[i]).ElementType)
             {
-                cellArr[i] = neighbours[i];
+                neighboursOfSameTypeList.Add(neighbours[i]);
             }
         }
 
-        return cellArr;
+        int[] neighboursOfSameTypeArr = new int[neighboursOfSameTypeList.Count];
+        for(int i = 0; i < neighboursOfSameTypeArr.Length; i++)
+        {
+            neighboursOfSameTypeArr[i] = neighboursOfSameTypeList[i];
+        }
+
+        return neighboursOfSameTypeArr;
     }
 
     /// <summary>
