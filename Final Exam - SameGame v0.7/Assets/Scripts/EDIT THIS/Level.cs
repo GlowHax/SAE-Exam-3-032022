@@ -95,6 +95,9 @@ public class Level
             Grid.GetElement(index).Visuals.transform.Rotate(Vector3.up, yRotationSpeed * Time.deltaTime);
         }
         return indexesOfObjectsToRotate.Length;
+
+        // comment the out the following line
+        //return -99;
     }
 
     /// <summary>
@@ -105,10 +108,25 @@ public class Level
     /// <param name="worldPosition">Point in worldcoordinates (this position is not necessarily inside of the grid bounds).</param>
     public int SelectCells(Vector3 worldPosition)
     {
+        int selectedCellIndex = Grid.PointToIndex(worldPosition);
 
+        if (selectedCellIndex == -1)
+            return 0;
+
+        if(GetAdjacentCellsOfSameType(selectedCellIndex).Length > 3)
+        {
+            Grid.RemoveElements(GetAdjacentCellsOfSameType(selectedCellIndex));
+            CalculatePoints(GetAdjacentCellsOfSameType(selectedCellIndex).Length);
+
+            return GetAdjacentCellsOfSameType(selectedCellIndex).Length;
+        }
+        else
+        {
+            return 0;
+        }
 
         // comment the out the following line
-        return -99;
+        //return -99;
     }
 
     /// <summary>
@@ -119,24 +137,20 @@ public class Level
     public int[] GetAdjacentCellsOfSameType(int cellIndex)
     {
         int[] neighbours = Grid.GetNeighbours(cellIndex);
-        List<int> neighboursOfSameTypeList = new List<int>();
-        neighboursOfSameTypeList.Add(cellIndex);
+        List<int> neighboursOfSameType = new List<int>();
+        neighboursOfSameType.Add(cellIndex);
 
         for(int i = 0; i < neighbours.Length; i++)
         {
             if(Grid.GetElement(cellIndex).ElementType == Grid.GetElement(neighbours[i]).ElementType)
             {
-                neighboursOfSameTypeList.Add(neighbours[i]);
+                neighboursOfSameType.Add(neighbours[i]);
             }
         }
 
-        int[] neighboursOfSameTypeArr = new int[neighboursOfSameTypeList.Count];
-        for(int i = 0; i < neighboursOfSameTypeArr.Length; i++)
-        {
-            neighboursOfSameTypeArr[i] = neighboursOfSameTypeList[i];
-        }
-
-        return neighboursOfSameTypeArr;
+        return neighboursOfSameType.ToArray();
+        // comment the out the following line
+        //return -99;
     }
 
     /// <summary>
@@ -151,8 +165,9 @@ public class Level
         }
 
 
-        // comment the out the following line
         return LevelState.FurtherMovesPossible;
+        // comment the out the following line
+        //return LevelState.NoElementsLeft;
     }
 
     /// <summary>
