@@ -113,7 +113,7 @@ public class Level
         if (selectedCellIndex == -1)
             return 0;
 
-        if(GetAdjacentCellsOfSameType(selectedCellIndex).Length > 3)
+        if(GetAdjacentCellsOfSameType(selectedCellIndex).Length > 1)
         {
             Grid.RemoveElements(GetAdjacentCellsOfSameType(selectedCellIndex));
             CalculatePoints(GetAdjacentCellsOfSameType(selectedCellIndex).Length);
