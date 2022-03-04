@@ -161,6 +161,7 @@ public class Level
     {
         if(Grid.CellCount == 0)
         {
+            points += 1000;
             return LevelState.NoElementsLeft;
         }
 
