@@ -93,6 +93,11 @@ public class GameManager : MonoBehaviour
         // Create new Level
         currentLevel = new Level(transform.position, cellSize, numberOfCellsPerRow, numberOfCellsPerColumn, randomNumberSeed, prefabs, transform);
 
+        for(int i = 0; i < currentLevel.Grid.CellCount; i++)
+        {
+            Instantiate(currentLevel.Grid.GetElement(i).Visuals, currentLevel.Grid.GetCellCenter(i), Quaternion.identity);
+        }
+
         isPlaying = true;
     }
 

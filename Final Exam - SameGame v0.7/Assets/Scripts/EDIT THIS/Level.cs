@@ -41,7 +41,7 @@ public class Level
     /// <summary>
     /// The playground.
     /// </summary>
-    ElementGrid grid;
+    public ElementGrid Grid;
 
     //------STUDENTS IMPLEMENT FUNCTIONALITY BELOW---------------------------------------------------------------------
     //---Constructor---
@@ -58,10 +58,19 @@ public class Level
     public Level(Vector3 origin, Vector2 cellSize, int cellCount_X, int cellCount_Y, int seedForRandomNumberGenerator, GameObject[] prefabs, Transform parent)
     {
         // Don't delete the following lines
-        grid = new ElementGrid(origin, cellSize, cellCount_X, cellCount_Y);
+        Grid = new ElementGrid(origin, cellSize, cellCount_X, cellCount_Y);
         points = 0;
 
         // ***** Students Start here ******
+        Random.InitState(seedForRandomNumberGenerator);
+
+        for(int i = 0; i < Grid.CellCount; i++)
+        {
+            int elementType = (int)Random.Range(0f, 4f);
+            Grid.SetElement(i, new Element(prefabs[elementType], elementType));
+        }
+
+        
     }
 
 
@@ -74,7 +83,7 @@ public class Level
     /// <param name="worldPosition">Point in worldcoordinates (this position is not necessarily inside of the grid bounds).</param>
     public int HoverCells(Vector3 worldPosition)
     {
-        // comment the out the following line
+        
         return -99;
     }
 
@@ -86,6 +95,8 @@ public class Level
     /// <param name="worldPosition">Point in worldcoordinates (this position is not necessarily inside of the grid bounds).</param>
     public int SelectCells(Vector3 worldPosition)
     {
+
+
         // comment the out the following line
         return -99;
     }
@@ -97,8 +108,20 @@ public class Level
     /// <param name="cellIndex">Index of the original cell.</param>
     public int[] GetAdjacentCellsOfSameType(int cellIndex)
     {
-        // comment the out the following line
-        return null;
+        int[] neighbours = Grid.GetNeighbours(cellIndex);
+        int[] cellArr = new int[neighbours.Length + 1];
+
+        cellArr[0] = cellIndex;
+
+        for(int i = 1; i < neighbours.Length; i++)
+        {
+            if(Grid.GetElement(cellIndex).ElementType == Grid.GetElement(neighbours[i]).ElementType)
+            {
+                cellArr[i] = neighbours[i];
+            }
+        }
+
+        return cellArr;
     }
 
     /// <summary>
@@ -107,8 +130,14 @@ public class Level
     /// </summary>
     public LevelState CheckLevelState()
     {
+        if(Grid.CellCount == 0)
+        {
+            return LevelState.NoElementsLeft;
+        }
+
+
         // comment the out the following line
-        return LevelState.NoElementsLeft;
+        return LevelState.FurtherMovesPossible;
     }
 
     /// <summary>
@@ -118,21 +147,24 @@ public class Level
     /// <param name="numElements">Number of elements.</param>
     public int CalculatePoints(int numElements)
     {
-        // comment the out the following line
-        return -99;
+        int points = 0;
+
+        points = (int)Mathf.Sqrt((numElements - 2));
+
+        return points;
     }
 
     /// <summary>
     /// Destroys the level. Cleanup the Grid.
-    /// This Function is calle by the GameManager.
+    /// This Function is called by the GameManager.
     /// </summary>
     public void DestroyLevel()
     {
         // Don't delete the following lines!
-        if (grid != null)
+        if (Grid != null)
         {
-            grid.DestroyGrid();
-            grid = null;
+            Grid.DestroyGrid();
+            Grid = null;
         }
     }
 }

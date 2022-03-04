@@ -60,7 +60,7 @@ public class ElementGrid
         this.origin = origin;
         this.cellSize = cellSize;
 
-        //PrintGrid();
+        PrintGrid();
     }
 
 
@@ -357,7 +357,5 @@ public class ElementGrid
             Debug.DrawLine(GetCellMinPoint(CalculateIndex(0, y)), GetCellMinPoint(CalculateIndex(cellsInARow - 1, y)) + new Vector3(cellSize.x, 0, 0), color, duration);
         }
         Debug.DrawLine(GetCellMinPoint(CalculateIndex(0, cellsInARow - 1)) + new Vector3(0, cellSize.y, 0), GetCellMinPoint(CalculateIndex(cellsInARow - 1, cellsInAColumn - 1)) + new Vector3(cellSize.x, cellSize.y, 0), color, duration);
-
-
     }
 }
